@@ -105,3 +105,7 @@
 /Users/buddy/Desktop/RicrSpoon_POS/obj/Debug/net8.0/RicrSpoon_POS.pdb
 /Users/buddy/Desktop/RicrSpoon_POS/obj/Debug/net8.0/RicrSpoon_POS.genruntimeconfig.cache
 /Users/buddy/Desktop/RicrSpoon_POS/obj/Debug/net8.0/ref/RicrSpoon_POS.dll
+/Users/buddy/Desktop/RicrSpoon_POS/bin/Debug/net8.0/dist/web.config
+/Users/buddy/Desktop/RicrSpoon_POS/bin/Debug/net8.0/dist/RicrSpoon_POS.deps.json
+/Users/buddy/Desktop/RicrSpoon_POS/bin/Debug/net8.0/dist/RicrSpoon_POS.runtimeconfig.json
+/Users/buddy/Desktop/RicrSpoon_POS/bin/Debug/net8.0/dist/RicrSpoon_POS.staticwebassets.endpoints.json

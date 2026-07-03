@@ -1,47 +1,50 @@
 // ==========================================
-// 🛡️ 飯匙雲端 POS - 全域權限保全與攔截機制 (無懈可擊穩定版)
+// 🛡️ 飯匙雲端 POS - 全域權限保全與攔截機制 (語法修正安全版)
 // ==========================================
 
+// 🚀 【第 0 道超前防線】進網頁的一瞬間「立刻檢查」，根本不等 DOM 載入！
+(function() {
+    const initPath = window.location.pathname;
+    const initName = localStorage.getItem("cashier");
+    const isLoginPage = initPath === "/" || initPath === "/index.html";
+
+    // 🛑 如果不是登入頁，且 localStorage 沒有登入憑證，就直接回到登入頁
+    if (!isLoginPage && !initName) {
+        alert("🔒 系統偵測登入憑證失效，請重新登入！");
+        window.location.href = "/index.html";
+    }
+})();
+
+// 🎨 畫面結構安全載入後，才執行非同步的名冊與 UI 覆蓋
 window.addEventListener("DOMContentLoaded", () => {
     try {
-        const currentUrl = window.location.href;
-        
-        // 1. 讀取瀏覽器小本子裡暫存的身分資料
+        const currentPath = window.location.pathname; // 💡 這裡安全宣告，不與上方衝突
+        const isLoginPage = currentPath === "/" || currentPath === "/index.html";
         const storedName = localStorage.getItem("cashier");
         const storedRole = localStorage.getItem("role") || "店員";
 
-        // 2. 尋找右上角的身分顯示標籤
+        // 1. 尋找右上角的身分顯示標籤
         const cashierNameSpan = document.getElementById("cashier-name");
         if (cashierNameSpan) {
             if (storedName) {
-                // 💡 如果有登入資料，立刻覆蓋掉 HTML 的「連線中」
                 cashierNameSpan.innerText = `${storedRole}：${storedName}`;
             } else {
                 cashierNameSpan.innerText = `${storedRole}：未登入`;
             }
         }
 
-        // 3. 🛑 【第一道防線】登入憑證攔截：如果「不是登入頁」且「小本子沒名字」，直接踢回首頁
-        if (!currentUrl.includes("index.html")) {
-            if (!storedName) {
-                alert("🔒 系統偵測登入憑證失效，請重新登入！");
-                window.location.href = "/index.html";
-                return; // 中斷後續執行
-            }
-        }
-
-        // 4. 🛑 【第二道防線】職稱權限精細檢查：只有「店長」能進入門市人事管理
-        if (currentUrl.includes("staff.html")) {
+        // 2. 🛑 職稱權限精細檢查：只有「店長」能進入門市人事管理
+        if (currentPath.includes("staff.html")) {
             if (storedRole !== "店長") {
                 alert("❌ 您的系統權限不足！只有【店長】才能管理門市人事帳號。");
-                window.location.href = "/home.html"; // 強制店員退回點餐收銀主頁
+                window.location.href = "/home.html"; 
                 return;
             }
         }
 
-        // 5. 如果在「登入頁 (index.html)」，且下拉選單存在，才去後端載入名冊
+        // 3. 如果在「登入頁 (index.html 或 /)」，且下拉選單存在，才去後端載入名冊
         const staffSelect = document.getElementById("login-staff-select");
-        if (staffSelect && currentUrl.includes("index.html")) {
+        if (staffSelect && isLoginPage) {
             loadStaffDropdown();
         }
 
@@ -100,14 +103,12 @@ async function handleLoginExecute(event) {
         if (res.ok) {
             const data = await res.json();
             
-            // 💡 將 C# 傳回的大寫屬性值存入 localStorage
             localStorage.setItem("cashier", data.StaffName);
             localStorage.setItem("role", data.Role);
             
-            // 驗證成功，放行進入系統主頁
             window.location.href = "/home.html"; 
         } else {
-            errorMsg.style.display = "flex"; // 401 密碼錯誤
+            errorMsg.style.display = "flex"; 
         }
     } catch (err) {
         console.error("登入通訊連線失敗:", err);

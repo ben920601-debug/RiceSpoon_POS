@@ -11,6 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
     syncHeaderCashierName();
 });
 
+// 除錯：顯示開啟頁面時 localStorage 內的登入欄位
+console.debug('[ui] DOMContentLoaded snapshot', {
+    url: window.location.href,
+    cashier: localStorage.getItem('cashier'),
+    role: localStorage.getItem('role'),
+    current_cashier_code: localStorage.getItem('current_cashier_code'),
+    current_cashier_name: localStorage.getItem('current_cashier_name'),
+    current_cashier_role: localStorage.getItem('current_cashier_role')
+});
+
 function handleSidebarActiveState() {
     const sidebarItems = document.querySelectorAll('.sidebar-item');
     if (!sidebarItems.length) return;
@@ -47,6 +57,8 @@ function syncHeaderCashierName() {
     const savedName = localStorage.getItem("current_cashier_name");
     const savedRole = localStorage.getItem("current_cashier_role"); // 💡 抓取角色
 
+    console.debug('[ui] syncHeaderCashierName', { savedCode, savedName, savedRole });
+
     if (savedCode && savedName) {
         cashierNameSpan.innerText = `收銀員：${savedCode} ${savedName} (${savedRole})`;
 
@@ -74,6 +86,7 @@ function syncHeaderCashierName() {
         const cashier = localStorage.getItem("cashier"); 
 
         if (!cashier) {
+            console.debug('[ui] 未偵測到任何 cashier 欄位，將導回 index.html');
             alert("系統尚未授權連線，請先登入收銀帳號！");
             window.location.href = "/index.html";
             return;

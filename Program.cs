@@ -78,9 +78,13 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "飯匙雲端POS系統 API v1 (MySQL 測試版)");
     });
 }
-app.UseDefaultFiles(); // 自動尋找 index.html 作為首頁
-app.UseStaticFiles();  // 啟用靜態檔案服務 (HTML/CSS/JS)
+
+// 🚀 關鍵校正一：強制將 HTTPS 安全轉向移到最頂部（必須最先執行）
 app.UseHttpsRedirection();
+
+// 🚀 關鍵校正二：先設定預設首頁，再啟用靜態檔案
+app.UseDefaultFiles(); // 這會強制把根目錄 "/" 對齊到 "/index.html"
+app.UseStaticFiles();  
 
 // 啟用 CORS 跨域（必須放在 UseAuthorization 之前）
 app.UseCors("AllowPosFrontend");
